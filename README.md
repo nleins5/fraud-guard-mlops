@@ -1,18 +1,18 @@
 # Fraud Guard MLOps
 
-> Cost-sensitive fraud detection with a decision threshold the business can defend and drift alerts the team can act on.
+Fraud review has a capacity cost. A useful score needs a threshold tied to that cost and a way to notice when transaction patterns change.
 
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)
 ![CI](https://github.com/nleins5/fraud-guard-mlops/actions/workflows/pipeline.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-0f766e)
 
-This project trains a fraud model on chronological transaction data, chooses a review threshold from explicit false-negative and investigation costs, then scores a shifted production window and calculates feature drift.
+I generated a chronological transaction stream, trained a model on the early period, and chose a review threshold on a later validation window. The final window changes amount and device-risk patterns to exercise a simple drift monitor.
 
 ![Fraud monitoring](artifacts/fraud_monitoring.png)
 
-## Business result
+## Results on simulated data
 
-The system produces a review queue, a serialized model bundle, and a drift report. The selected operating point minimizes expected validation loss instead of optimizing an arbitrary classification score.
+On the shifted final window, the policy sends 16.04% of transactions to review and catches 65.64% of simulated fraud cases. The threshold assumes a $240 missed-fraud cost and a $20 review cost. Those are scenario inputs, not measured losses from a bank.
 
 | Production result | Value |
 |---|---:|
@@ -22,13 +22,7 @@ The system produces a review queue, a serialized model bundle, and a drift repor
 | Selected threshold | 0.0597 |
 | Drift alerts | 1 |
 
-## What this demonstrates
-
-- Imbalanced classification with precision-recall evaluation
-- Cost-sensitive threshold optimization
-- Chronological validation and production simulation
-- Feature drift monitoring with Population Stability Index
-- Reproducible artifacts, Docker, and CI
+Device risk triggers the drift alert. The alert says the input distribution changed; it does not establish why or prove that model performance declined.
 
 ## Reproduce
 
@@ -39,18 +33,9 @@ make install
 make run
 ```
 
-The generated transaction stream includes a controlled production shift in amount and device risk. That makes the monitoring layer observable on every run and avoids publishing sensitive financial data.
+The generated stream keeps the experiment repeatable without publishing financial records.
 
-## Repository map
+## What I would improve next
 
-```text
-src/fraud_guard/         simulation, training, decisioning, monitoring
-data/                    reproducible transaction snapshot
-artifacts/               model, scores, metrics, drift report, chart
-.github/workflows/       CI reproduction job
-```
-
-## Interview discussion
-
-The next production steps would include probability calibration, delayed-label monitoring, case-management feedback, protected-group fairness checks, and a champion-challenger rollout.
+I would calibrate probabilities, account for delayed fraud labels, and check whether the review policy works consistently across customer groups.
 
