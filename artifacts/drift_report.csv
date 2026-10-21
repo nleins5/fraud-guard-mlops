@@ -1,0 +1,8 @@
+feature,psi,status
+device_risk,2.0783,alert
+amount,0.0347,stable
+account_age_days,0.0029,stable
+distance_km,0.0021,stable
+velocity_1h,0.0005,stable
+hour,0.0,stable
+is_foreign,0.0,stable

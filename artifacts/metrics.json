@@ -1,0 +1,9 @@
+{
+  "fraud_rate": 0.0453,
+  "average_precision": 0.317,
+  "decision_threshold": 0.0597,
+  "precision_at_threshold": 0.1853,
+  "recall_at_threshold": 0.6564,
+  "review_rate": 0.1604,
+  "drift_alerts": 1
+}
